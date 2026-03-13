@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Select Domain</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Select Quiz Domain</h2>
+
+<button onclick="startQuiz('aptitude')">📊 Aptitude</button>
+<button onclick="startQuiz('os')">⚙ Operating System</button>
+<button onclick="startQuiz('cs')">💻 Computer Science</button>
+
+</div>
+
+<script>
+function startQuiz(domain){
+localStorage.setItem("domain",domain);
+window.location.href="quiz.html";
+}
+</script>
+
+</body>
+</html>
