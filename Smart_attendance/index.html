@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SmartAttend | Login</title>
+  <style>
+    body {
+      background: linear-gradient(180deg, #fffde7, #fff9c4);
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box {
+      background: white;
+      padding: 40px;
+      width: 340px;
+      text-align: center;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo { color: #fbc02d; font-size: 34px; font-weight: 700; margin-bottom: 5px; }
+    p { color: #555; font-size: 14px; }
+    input, select {
+      width: 90%; padding: 10px; margin: 8px 0;
+      border-radius: 8px; border: 1px solid #ddd;
+      font-size: 15px;
+    }
+    button {
+      background: #fbc02d; color: white; border: none;
+      width: 95%; padding: 10px; border-radius: 8px;
+      font-weight: bold; font-size: 16px; cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #fdd835; transform: scale(1.03); }
+    footer { font-size: 12px; color: #777; margin-top: 10px; }
+  </style>
+</head>
+
+<body>
+  <div class="login-box">
+    <h1 class="logo">SmartAttend</h1>
+    <p>Smart • Secure • Predictive</p>
+
+    <input type="text" id="username" placeholder="Enter Username" />
+    <input type="password" id="password" placeholder="Enter Password" />
+    <select id="role">
+      <option>-- Select Role --</option>
+      <option>Principal</option>
+      <option>HOD</option>
+      <option>Faculty</option>
+      <option>Student</option>
+    </select>
+
+    <button onclick="login()">Login</button>
+    <footer>© 2025 SmartAttend</footer>
+  </div>
+
+  <script>
+    function login() {
+      const role = document.getElementById('role').value.trim();
+
+      if (role === "Principal") {
+        window.location.href = "principal_dashboard.html";
+      } else if (role === "HOD") {
+        window.location.href = "hod_dashboard.html";
+      } else if (role === "Faculty") {
+        window.location.href = "faculty_dashboard.html";
+      } else if (role === "Student") {
+        window.location.href = "student_dashboard.html";
+      } else {
+        alert("⚠️ Please select your role before logging in!");
+      }
+    }
+  </script>
+</body>
+</html>
+

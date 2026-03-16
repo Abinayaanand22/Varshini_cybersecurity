@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SmartAttend | Principal Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {
+    background: linear-gradient(180deg, #fffde7, #fff9c4);
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    animation: fadeIn 1s ease;
+  }
+  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+  .navbar {
+    background: #fbc02d;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .logout {
+    position: fixed; top: 15px; right: 15px;
+    background: white; color: #fbc02d;
+    border: none; font-weight: bold;
+    padding: 8px 15px; border-radius: 8px; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .logout:hover { background: #fbc02d; color: white; }
+
+  .container {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transition: 0.3s ease;
+  }
+  .card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  }
+
+  h3 {
+    color: #fbc02d;
+    border-bottom: 2px solid #fbc02d;
+    padding-bottom: 5px;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border-bottom: 1px solid #eee; padding: 8px; text-align: center; }
+  th { background: #fbc02d; color: white; }
+</style>
+</head>
+
+<body>
+  <div class="navbar">👑 Principal Dashboard</div>
+  <button class="logout" onclick="window.location.href='index.html'">Logout</button>
+
+  <div class="container">
+    <div class="card">
+      <h3>🏫 College Department Attendance</h3>
+      <canvas id="collegeChart" height="150"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>📊 Department-Wise Average Marks</h3>
+      <canvas id="marksChart" height="150"></canvas>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+      <h3>⚠️ Overall Risk Analysis</h3>
+      <table>
+        <tr><th>Department</th><th>At-Risk Students</th><th>Average Attendance</th><th>Remarks</th></tr>
+        <tr><td>CSE</td><td>12</td><td>84%</td><td>⚠️ Moderate</td></tr>
+        <tr><td>ECE</td><td>8</td><td>87%</td><td>✅ Stable</td></tr>
+        <tr><td>IT</td><td>15</td><td>81%</td><td>⚠️ Needs Focus</td></tr>
+        <tr><td>MECH</td><td>10</td><td>79%</td><td>❗ Low Attendance</td></tr>
+      </table>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+      <h3>🤖 Predictive Report Summary</h3>
+      <ul>
+        <li>📉 Expected overall drop: <b>2%</b> next month.</li>
+        <li>🧠 AI Suggests increasing interactive labs for weaker departments.</li>
+        <li>🎯 Reward top performing departments for maintaining >90% attendance.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // College-wide Attendance
+    new Chart(document.getElementById('collegeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['CSE', 'ECE', 'EEE', 'IT', 'MECH'],
+        datasets: [{
+          data: [89, 85, 83, 86, 80],
+          backgroundColor: ['#fbc02d','#fdd835','#ffee58','#fff176','#fff59d']
+        }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+
+    // Average Marks
+    new Chart(document.getElementById('marksChart'), {
+      type: 'line',
+      data: {
+        labels: ['CSE', 'ECE', 'EEE', 'IT', 'MECH'],
+        datasets: [{
+          data: [86, 83, 81, 85, 79],
+          borderColor: '#fbc02d',
+          fill: true,
+          backgroundColor: 'rgba(251,192,45,0.3)',
+          tension: 0.4
+        }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartAttend | Student Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  /* 🌟 Background & Font */
+  body {
+    background: linear-gradient(180deg, #fffde7, #fff9c4);
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    animation: fadeInBody 1s ease;
+  }
+
+  @keyframes fadeInBody {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 🌈 Navbar */
+  .navbar {
+    background: #fbc02d;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    animation: slideDown 0.8s ease;
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* 🌼 Layout Grid */
+  .container {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    animation: fadeInGrid 1s ease-in-out;
+  }
+
+  @keyframes fadeInGrid {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 💛 Cards */
+  .card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInCard 1s ease-in;
+  }
+
+  @keyframes fadeInCard {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  }
+
+  /* 📊 Headings */
+  h3 {
+    margin-top: 0;
+    color: #fbc02d;
+    border-bottom: 2px solid #fbc02d;
+    padding-bottom: 5px;
+  }
+
+  /* 🧾 Table */
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border-bottom: 1px solid #eee; padding: 8px; text-align: center; }
+  th { background: #fbc02d; color: white; }
+</style>
+</head>
+
+<body>
+  <div class="navbar">🎓 Student Dashboard</div>
+
+  <div class="container">
+       <button class="action-btn" onclick="window.location.href='student_qr_scan.html'">
+  Scan QR to Mark Attendance
+</button>
+
+    <!-- Attendance Overview -->
+    <div class="card">
+      <h3>📅 Attendance Overview</h3>
+      <canvas id="attendanceChart"></canvas>
+      <p style="text-align:center;">Your Average Attendance: <b>89%</b></p>
+    </div>
+
+    <!-- Marks Overview -->
+    <div class="card">
+      <h3>📘 Marks Overview</h3>
+      <canvas id="marksChart"></canvas>
+      <p style="text-align:center;">Average Marks: <b>85%</b></p>
+    </div>
+
+    <!-- Subject-Wise Attendance -->
+    <div class="card" style="grid-column: span 2;">
+      <h3>📊 Subject-Wise Attendance</h3>
+      <canvas id="subjectChart" height="200"></canvas>
+    </div>
+
+    <!-- Predictive Insights -->
+    <div class="card" style="grid-column: span 2;">
+      <h3>🤖 Smart Insights</h3>
+      <ul>
+        <li>📈 You're doing great! Maintain attendance above 85% to stay safe.</li>
+        <li>💬 Missed most classes on Mondays – try attending all this week!</li>
+        <li>🎯 AI predicts your next month attendance will be <b>91%</b>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // 🎯 Attendance Trend
+    new Chart(document.getElementById('attendanceChart'), {
+      type: 'line',
+      data: {
+        labels: ['June','July','Aug','Sep','Oct'],
+        datasets: [{
+          data: [88,90,85,87,89],
+          label: 'Attendance %',
+          borderColor: '#fbc02d',
+          fill: true,
+          backgroundColor: 'rgba(251,192,45,0.3)',
+          tension: 0.3
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { suggestedMax: 100 } } }
+    });
+
+    // 📘 Marks Overview
+    new Chart(document.getElementById('marksChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Test 1','Test 2','Test 3'],
+        datasets: [{
+          data: [82,88,85],
+          backgroundColor: ['#fbc02d','#ffee58','#fdd835']
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { suggestedMax: 100 } } }
+    });
+
+    // 📊 Subject Attendance
+    new Chart(document.getElementById('subjectChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Cyber Security','IoT','Cloud','Python','DSA'],
+        datasets: [{
+          data: [90,85,88,92,87],
+          backgroundColor: ['#fbc02d','#fdd835','#ffee58','#fff176','#ffeb3b']
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { suggestedMax: 100 } } }
+    });
+  </script>
+</body>
+</html>
