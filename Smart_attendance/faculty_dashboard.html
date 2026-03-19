@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SmartAttend | Faculty Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  /* Page + animations (matches other pages) */
+  body {
+    background: linear-gradient(180deg, #fffde7, #fff9c4);
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    animation: fadeInBody 0.9s ease;
+  }
+  @keyframes fadeInBody { from { opacity:0; transform:translateY(-8px)} to {opacity:1; transform:none} }
+
+  .navbar {
+    background:#fbc02d; color:white; padding:14px; text-align:center; font-size:20px; font-weight:700;
+    box-shadow:0 2px 8px rgba(0,0,0,0.12); animation:slideDown 0.7s ease;
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  .nav-left{ display:flex; align-items:center; gap:12px; padding-left:12px; }
+  .brand { font-size:20px; color:white; font-weight:800; }
+  .small-btn { background:transparent; border:none; color:white; font-weight:600; cursor:pointer; padding:8px 12px; border-radius:8px; }
+  .small-btn:hover { background:rgba(255,255,255,0.12); }
+
+  @keyframes slideDown { from { transform:translateY(-30px); opacity:0 } to { transform:none; opacity:1 } }
+
+  .container { padding:20px; display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+  .card {
+    background:white; border-radius:14px; padding:18px; box-shadow:0 6px 20px rgba(0,0,0,0.12);
+    transition:transform .25s ease, box-shadow .25s ease; animation:fadeInCard .9s ease;
+  }
+  @keyframes fadeInCard { from { opacity:0; transform:translateY(12px) } to {opacity:1; transform:none} }
+  .card:hover { transform:scale(1.02); box-shadow:0 10px 30px rgba(0,0,0,0.18); }
+
+  h3 { margin:0 0 10px 0; color:#fbc02d; border-bottom:2px solid #fbc02d; padding-bottom:6px; }
+
+  /* Table */
+  table { width:100%; border-collapse:collapse; margin-top:10px; font-size:14px; }
+  th, td { padding:8px 6px; text-align:center; border-bottom:1px solid #eee; }
+  th { background:#fbc02d; color:white; }
+  .action-btn { background:#fbc02d; color:white; border:none; padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:700; }
+  .action-btn.warn { background:#ff7043; }
+  .action-btn.counsel { background:#29b6f6; }
+  .action-btn.app { background:#81c784; color:#fff; }
+
+  /* Small status badge */
+  .badge { padding:6px 10px; border-radius:20px; font-weight:700; color:#fff; display:inline-block; }
+  .good { background:#81c784; } .mid { background:#ffb74d; } .bad { background:#e57373; }
+
+  /* Responsive */
+  @media (max-width:920px) {
+    .container { grid-template-columns: 1fr; padding:12px; }
+  }
+</style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-left">
+      <div class="brand">SmartAttend • Faculty</div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px;padding-right:12px">
+      <button class="small-btn" onclick="goBack()">← Logout</button>
+      <div style="color:white;font-weight:700">Welcome, Faculty</div>
+    </div>
+  </div>
+
+  <div class="container">
+      <!-- 🔥 60-Second Dynamic Hybrid QR Code System -->
+<div class="card" style="grid-column: span 2; text-align:center;">
+  <h3>🟡 Dynamic Hybrid QR Code (Auto Refresh Every 60 sec)</h3>
+
+  <p id="qrStatus" style="color:#444;font-size:14px;">
+    Secure QR Generating…
+  </p>
+
+  <!-- QR Code Canvas -->
+  <canvas id="qrCanvas" style="margin:auto;"></canvas>
+
+  <!-- Expiry Countdown -->
+  <p style="margin-top:10px;font-size:13px;color:#777;">
+    QR Expires In: <b id="timer">60</b> sec
+  </p>
+
+  <!-- Info / Security Panel -->
+  <div style="margin-top:20px;font-size:14px;color:#555;text-align:left;">
+    <b>QR Security:</b>
+    <ul>
+      <li>Dynamic Token 🔄 (Changes Every 60s)</li>
+      <li>Self-Destruct After Expiry 💣</li>
+      <li>GeoFence Ready 📍 (Backend Checks Location)</li>
+      <li>Face Detection Compatible 😊</li>
+    </ul>
+  </div>
+
+  <!-- Attendance Preview -->
+  <h4 style="color:#fbc02d;margin-top:10px;">Today's Attendance Preview</h4>
+  <p style="font-size:14px;color:#555;">
+    Expected Students: <b id="expCount">60</b><br>
+    Present (scanned): <b id="presentCount">0</b><br>
+    Pending: <b id="pendingCount">60</b>
+  </p>
+</div>
+
+<!-- QR Code Library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script>
+  let countdown = 60;
+
+  function generateDynamicQR() {
+    // Create secure dynamic token (for backend)
+    const token = "QR-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
+
+    document.getElementById("qrStatus").innerText = "QR Active Token: " + token;
+
+    // Generate QR
+    QRCode.toCanvas(
+      document.getElementById("qrCanvas"),
+      token,
+      function (error) {
+        if (error) console.error(error);
+      }
+    );
+
+    // Reset timer to 60 sec
+    countdown = 60;
+    document.getElementById("timer").innerText = countdown;
+  }
+
+  // Timer Function
+  setInterval(() => {
+    countdown--;
+    document.getElementById("timer").innerText = countdown;
+
+    // If timer ends → regenerate QR
+    if (countdown <= 0) {
+      generateDynamicQR();
+    }
+  }, 1000);
+
+  // Generate first QR immediately
+  generateDynamicQR();
+</script>
+
+    <!-- Card: Class Attendance Trend -->
+    <div class="card">
+      <h3>📈 Class Attendance (Weekly)</h3>
+      <canvas id="classAttendance" height="140"></canvas>
+      <p style="margin-top:10px;color:#666;font-size:13px;">Average attendance this month: <b id="classAvg">86%</b></p>
+    </div>
+
+    <!-- Card: Class Marks Overview -->
+    <div class="card">
+      <h3>📘 Class Marks (Recent Tests)</h3>
+      <canvas id="classMarks" height="140"></canvas>
+      <p style="margin-top:10px;color:#666;font-size:13px;">Class average marks: <b id="marksAvg">78%</b></p>
+    </div>
+
+    <!-- Card: Student List (interactive) -->
+    <div class="card" style="grid-column: span 2;">
+      <h3>👩🎓 Student List — Attendance & Marks</h3>
+      <table id="studentTable">
+        <thead>
+          <tr><th>Roll</th><th>Name</th><th>Attendance %</th><th>Avg Marks</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <!-- Rows injected by JS -->
+        </tbody>
+      </table>
+      <p style="color:#666;margin-top:8px;font-size:13px;">Tip: Click <b>Warn</b> to send auto-warning (demo alert), <b>Counsel</b> to schedule a meeting.</p>
+    </div>
+
+    <!-- Card: AI Insights & Quick Actions -->
+    <div class="card" style="grid-column: span 2;">
+      <h3>🤖 Quick Insights & Actions</h3>
+      <ul style="color:#555">
+        <li>⚠️ 4 students below 75% attendance — focus on lab sessions.</li>
+        <li>📅 Best time to schedule make-up: Friday 3–5 PM.</li>
+        <li>💬 Quick actions: select a student → press action button to simulate notify.</li>
+      </ul>
+    </div>
+  </div>
+
+<script>
+  // Sample class data (replace later with backend)
+  const students = [
+    {roll:'CS301', name:'Varshini', att:94, marks:91},
+    {roll:'CS302', name:'Kaviya', att:74, marks:72},
+    {roll:'CS303', name:'Hari', att:80, marks:78},
+    {roll:'CS304', name:'Deepa', att:69, marks:65},
+    {roll:'CS305', name:'Raghu', att:88, marks:83},
+    {roll:'CS306', name:'Sonia', att:76, marks:70}
+  ];
+
+  // Populate student table
+  const tbody = document.querySelector('#studentTable tbody');
+  students.forEach(s=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${s.roll}</td>
+      <td style="text-align:left;padding-left:12px">${s.name}</td>
+      <td>${s.att}%</td>
+      <td>${s.marks}%</td>
+      <td>${statusBadge(s.att)}</td>
+      <td>
+        <button class="action-btn warn" onclick="actionWarn('${s.roll}','${s.name}')">Warn</button>
+        <button class="action-btn counsel" onclick="actionCounsel('${s.roll}','${s.name}')">Counsel</button>
+        <button class="action-btn app" onclick="actionAppreciate('${s.roll}','${s.name}')">Appreciate</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  function statusBadge(att){
+    if(att>=90) return `<span class="badge good">Excellent</span>`;
+    if(att>=75) return `<span class="badge mid">Satisfactory</span>`;
+    return `<span class="badge bad">At Risk</span>`;
+  }
+
+  function actionWarn(roll,name){
+    alert(`Auto-warning sent to ${name} (${roll}) — please improve attendance.`);
+  }
+  function actionCounsel(roll,name){
+    alert(`Counsel scheduled for ${name} (${roll}) — demo action.`);
+  }
+  function actionAppreciate(roll,name){
+    alert(`Appreciation sent to ${name} (${roll}) — great job!`);
+  }
+
+  // Charts
+  // 1) classAttendance (weekly)
+  new Chart(document.getElementById('classAttendance'), {
+    type:'line',
+    data:{
+      labels:['Week 1','Week 2','Week 3','Week 4'],
+      datasets:[{
+        label:'Attendance %',
+        data:[88,85,90,86],
+        borderColor:'#fbc02d',
+        backgroundColor:'rgba(251,192,45,0.18)',
+        tension:0.3,
+        fill:true,
+      }]
+    },
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ suggestedMin:50, suggestedMax:100 } } }
+  });
+
+  // 2) classMarks (tests)
+  new Chart(document.getElementById('classMarks'), {
+    type:'bar',
+    data:{
+      labels:['Test1','Test2','Test3'],
+      datasets:[{ data:[75,80,79], backgroundColor:['#fbc02d','#ffee58','#fdd835'] }]
+    },
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ suggestedMin:0, suggestedMax:100 } } }
+  });
+
+  // Fill average text
+  const avgAtt = Math.round(students.reduce((a,b)=>a+b.att,0)/students.length);
+  const avgMarks = Math.round(students.reduce((a,b)=>a+b.marks,0)/students.length);
+  document.getElementById('classAvg').innerText = avgAtt + '%';
+  document.getElementById('marksAvg').innerText = avgMarks + '%';
+
+  // Back to login
+  function goBack(){
+    // show a quick confirmation then redirect
+    if(confirm('Logout and return to login page?')) window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>

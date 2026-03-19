@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SmartAttend | HOD Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {
+    background: linear-gradient(180deg, #fffde7, #fff9c4);
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    animation: fadeIn 1s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .navbar {
+    background: #fbc02d;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .container {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  }
+
+  h3 { color: #fbc02d; border-bottom: 2px solid #fbc02d; padding-bottom: 5px; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border-bottom: 1px solid #eee; padding: 8px; text-align: center; }
+  th { background: #fbc02d; color: white; }
+
+  .risk { color: red; font-weight: bold; }
+  .good { color: green; font-weight: bold; }
+
+  .logout { 
+    position: fixed; top: 15px; right: 15px; 
+    background: white; color: #fbc02d;
+    border: none; font-weight: bold; padding: 8px 15px;
+    border-radius: 8px; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .logout:hover { background: #fbc02d; color: white; }
+</style>
+</head>
+
+<body>
+  <div class="navbar">🎓 HOD Dashboard</div>
+  <button class="logout" onclick="window.location.href='index.html'">Logout</button>
+
+  <div class="container">
+    <div class="card">
+      <h3>🏫 Department Attendance Overview</h3>
+      <canvas id="deptChart" height="150"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>⚠️ At-Risk Students (Below 75%)</h3>
+      <table>
+        <tr><th>Roll No</th><th>Name</th><th>Attendance %</th><th>Status</th></tr>
+        <tr><td>CS101</td><td>Kaviya</td><td>68%</td><td class="risk">Warning</td></tr>
+        <tr><td>CS102</td><td>Sri</td><td>72%</td><td class="risk">Needs Counseling</td></tr>
+        <tr><td>CS104</td><td>Rahul</td><td>60%</td><td class="risk">Critical</td></tr>
+      </table>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+      <h3>🤖 Predictive Insights</h3>
+      <ul>
+        <li>Attendance may drop by <b>3%</b> next month due to low lab engagement.</li>
+        <li>Encourage staff to monitor lab presence and give weekly updates.</li>
+        <li>Motivate <b>Semester 3</b> batch through attendance rewards.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+      <h3>📈 Faculty Performance Overview</h3>
+      <canvas id="facultyChart" height="150"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Department chart
+    new Chart(document.getElementById('deptChart'), {
+      type: 'bar',
+      data: {
+        labels: ['CSE', 'ECE', 'EEE', 'IT', 'MECH'],
+        datasets: [{
+          label: 'Avg Attendance %',
+          data: [89, 82, 85, 87, 79],
+          backgroundColor: ['#fbc02d','#ffca28','#fdd835','#ffee58','#fff176']
+        }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+
+    // Faculty performance chart
+    new Chart(document.getElementById('facultyChart'), {
+      type: 'line',
+      data: {
+        labels: ['Mr. Raj','Mrs. Priya','Mr. Sanjay','Ms. Divya'],
+        datasets: [{
+          data: [92, 85, 78, 88],
+          borderColor: '#fbc02d',
+          backgroundColor: 'rgba(251,192,45,0.3)',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+  </script>
+</body>
+</html>
+
