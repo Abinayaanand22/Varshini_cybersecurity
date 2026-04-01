@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+}
+
+/* ✅ correct cursor behavior */
+input, textarea {
+  cursor: text;
+}
+
+button {
+  cursor: pointer;
+}
+
+p, h1, h2, h3, div {
+  cursor: default;
+}
+
+/* sidebar clickable */
+.sidebar p {
+  cursor: pointer;
+}
